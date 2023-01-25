@@ -1,4 +1,6 @@
-import { RecordHandler } from './loader';
+/**
+ * Singleton pattern.
+ */
 
 interface Pokemon {
     id: string;
@@ -15,8 +17,12 @@ interface Database<T extends BaseRecord> {
     get(id: string): T | undefined;
 }
 
-class InMemoryDatabase<T extends BaseRecord> implements Database<T> {
+class InMemoryDatabase<T extends Pokemon> implements Database<T> {
     private db: Record<string, T> = {};
+
+    static instance = new InMemoryDatabase();
+
+    private constructor() {}
 
     public set(value: T): void {
         this.db[value.id] = value;
@@ -27,11 +33,12 @@ class InMemoryDatabase<T extends BaseRecord> implements Database<T> {
     }
 }
 
-const pokemonDB = new InMemoryDatabase<Pokemon>();
-pokemonDB.set({
+const PokemonDBSingleton = InMemoryDatabase.instance;
+
+PokemonDBSingleton.set({
     id: 'Pikachu',
     attack: 75,
     defense: 30,
 });
 
-console.log(pokemonDB.get('Pikachu'));
+console.log(PokemonDBSingleton.get('Pikachu'));
